@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 6194135}
   - component: {fileID: 6194140}
   - component: {fileID: 6194141}
+  - component: {fileID: 6194142}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -244,10 +245,25 @@ MonoBehaviour:
   m_GameObject: {fileID: 6194133}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ae088ddb6060d4545b713d4468003238, type: 3}
+  m_Script: {fileID: 11500000, guid: e806008021dcc114d8e62e5d408e759f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Collider: {fileID: 6194135}
+  CollisionAction:
+  - {fileID: 6194142}
+  collisionsList: []
+--- !u!114 &6194142
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6194133}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5b7773b3ccaa774ba45e7406ec0ff84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   Damage: 10
 --- !u!1 &137536266
 GameObject:

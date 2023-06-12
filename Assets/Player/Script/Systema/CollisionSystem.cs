@@ -8,7 +8,7 @@ public class CollisionSystem : ComponentSystem
 {
     private EntityQuery entityQuery;
     private Collider[] result = new Collider[50];
-
+    private List<Collider> colliders;
     protected override void OnCreate()
     {
         entityQuery = GetEntityQuery(ComponentType.ReadOnly<ColliderData>(),
@@ -25,6 +25,7 @@ public class CollisionSystem : ComponentSystem
                 float3 position = gameObject.transform.position;
                 Quaternion rotation = gameObject.transform.rotation;
 
+                
                 int size = 0;
 
                 switch (colliderData.TypeCollider)
@@ -53,8 +54,17 @@ public class CollisionSystem : ComponentSystem
 
                 if (size>0)
                 {
-                    collisions.Execute(result);
-                    Debug.Log(result);
+                    colliders = new List<Collider>();
+                    for (int i = 0; i < result.Length; i++)
+                    {
+                        if (result[i] != null)
+                        {
+                            collisions.collisionsList.Add(result[i]);
+                        }
+
+                    }
+
+                    collisions.Execute();
                 }
             }
             );

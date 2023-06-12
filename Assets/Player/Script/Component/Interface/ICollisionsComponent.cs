@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface ICollisionsComponent
 {
-    void Execute(Collider[] colliders);
+    void Execute();
 }

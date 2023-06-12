@@ -4,13 +4,47 @@ using Unity.Entities;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class CollisionsComponent : MonoBehaviour, ICollisionsComponent, IConvertGameObjectToEntity
+public class CollisionsComponent : MonoBehaviour, IConvertGameObjectToEntity, ICollisionsComponent
 {
     public Collider Collider;
 
-    public void Execute(Collider[] colliders)//получим массив коллайдеров при столкновении
-    {
+    public List<MonoBehaviour> CollisionAction = new List<MonoBehaviour>();
+    [HideInInspector] public List<IActionCollision> CollisionsActionComponent = new List<IActionCollision>();
 
+    [HideInInspector] public List<Collider> collisionsList;
+
+    private void Start()
+    {
+        for (int i = 0; i < CollisionAction.Count; i++)
+        {
+            if (CollisionAction[i] is IActionCollision component)
+            {
+                CollisionsActionComponent.Add(component);
+            }
+            else
+            {
+                Debug.Log("Нет компонентов с IActionCollision");
+            }
+        }
+    }
+    public void Execute()
+    {
+        if (CollisionsActionComponent!=null)
+        {
+
+            for (int i = 0; i < CollisionsActionComponent.Count; i++)
+            {
+                CollisionsActionComponent[i].ListGameObjects = new List<GameObject>();
+
+                collisionsList.ForEach(coll=>
+                {
+                    CollisionsActionComponent[i].ListGameObjects.Add(coll.gameObject);
+                });
+
+                CollisionsActionComponent[i].Execute();
+            }
+        }
+       
     }
     public void Convert(Entity entity, EntityManager entityManager, GameObjectConversionSystem conversionSystem)
     {
