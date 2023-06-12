@@ -18,7 +18,7 @@ public class UserShootSystem : ComponentSystem
             (
             (Entity entity, UserInputDataComponent userInput, ref InputData inputData) =>
             {
-                if (inputData.Shoot > 0f && userInput.ShootAction != null && userInput.ShootAction is IShoot ability)
+                if (inputData.Shoot > 0f && userInput.ShootAction != null && userInput.ShootAction is IShootComponent ability)
                 {
                     ability.Shoot();
                 }

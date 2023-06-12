@@ -18,7 +18,7 @@ public class UserAnimSystem : ComponentSystem
             (
             (Entity entity, UserInputDataComponent userInput, ref InputData inputData) =>
             {
-                if (userInput.CurrentAnim != null && userInput.CurrentAnim is IAnim ability)
+                if (userInput.CurrentAnim != null && userInput.CurrentAnim is IAnimComponent ability)
                 {
                     //pull
                     bool isPull;

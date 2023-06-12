@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Mathematics;
 
-public class TranslationAnim : MonoBehaviour, IAnim
+public class TranslationAnimComponent : MonoBehaviour, IAnimComponent
 {
     private Animator animator;
     private float refFloat = 0.01f;
@@ -12,7 +12,7 @@ public class TranslationAnim : MonoBehaviour, IAnim
         animator = GetComponent<Animator>();
     }
 
-    void IAnim.GetMove(float2 currentMove)
+    void IAnimComponent.GetMove(float2 currentMove)
     {
         if (Mathf.Abs(currentMove.x) >= refFloat | Mathf.Abs(currentMove.y) >= refFloat)
         {
@@ -24,7 +24,7 @@ public class TranslationAnim : MonoBehaviour, IAnim
         }
     }
 
-    void IAnim.GetPull(bool currentPull)
+    void IAnimComponent.GetPull(bool currentPull)
     {
         if (currentPull)
         {

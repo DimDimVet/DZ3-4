@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Pull : MonoBehaviour, IPull
+public class PullComponent : MonoBehaviour, IPullComponent
 {
     [SerializeField] private Rigidbody rigidbodyObj;
     [SerializeField] private float axisX = 0f, axisY = 0f, axisZ = 0f;

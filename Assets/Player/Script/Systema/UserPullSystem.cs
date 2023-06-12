@@ -18,7 +18,7 @@ public class UserPullSystem : ComponentSystem
             (
             (Entity entity, UserInputDataComponent userInput, ref InputData inputData) =>
             {
-                if (inputData.Pull > 0 && userInput.PullAction != null && userInput.PullAction is IPull pull)
+                if (inputData.Pull > 0 && userInput.PullAction != null && userInput.PullAction is IPullComponent pull)
                 {
                     pull.Jamp();
                 }

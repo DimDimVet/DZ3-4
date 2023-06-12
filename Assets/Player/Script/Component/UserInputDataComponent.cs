@@ -17,17 +17,17 @@ public class UserInputDataComponent : MonoBehaviour, IConvertGameObjectToEntity
         {
             MoveSpeed = speed / 100
         });
-        if (ShootAction != null & ShootAction is IShoot)
+        if (ShootAction != null & ShootAction is IShootComponent)
         {
             entityManager.AddComponentData(entity, new ShootData());//добавим в сущность стурктуру ввода стрельбы
         }
 
-        if (PullAction != null & PullAction is IPull)
+        if (PullAction != null & PullAction is IPullComponent)
         {
             entityManager.AddComponentData(entity, new PullData());//добавим в сущность стурктуру ввода прыжка
         }
 
-        if (CurrentAnim != null & CurrentAnim is IAnim)
+        if (CurrentAnim != null & CurrentAnim is IAnimComponent)
         {
             entityManager.AddComponentData(entity, new AnimData());//добавим в сущность стурктуру ввода анимации
         }
