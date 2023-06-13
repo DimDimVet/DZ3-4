@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class ShootComponent : MonoBehaviour, IShootComponent
 {
+
+    [SerializeField] private Rigidbody bullet;
+    [SerializeField] private float bulletSpeed;
+    [SerializeField] private Transform outBullet;
+    //private GameObject currentBullet;
+    private Rigidbody currentBulletVelocity;
+
     //public GameObject Bullet;
     public float ShootDelay;
     private float shootTime = float.MinValue;
@@ -24,6 +31,12 @@ public class ShootComponent : MonoBehaviour, IShootComponent
 
         if (gunParticle != null & gunExitParticle != null)
         {
+
+            currentBulletVelocity = Instantiate(bullet, outBullet.position, outBullet.rotation);
+            currentBulletVelocity.AddForce(outBullet.up * bulletSpeed,ForceMode.Force);
+            //
+
+
             gunParticle.Play();//при нажатии вызываем включение системы частиц
             gunExitParticle.Play();
         }
