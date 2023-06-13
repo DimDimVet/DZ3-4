@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using Unity.Entities;
 using Unity.Mathematics;
@@ -8,51 +7,56 @@ public class CollisionsComponent : MonoBehaviour, IConvertGameObjectToEntity, IC
 {
     public Collider Collider;
 
+    //соберем в лист стороние скрипты
     public List<MonoBehaviour> CollisionAction = new List<MonoBehaviour>();
-    [HideInInspector] public List<IActionCollision> CollisionsActionComponent = new List<IActionCollision>();
-
-    [HideInInspector] public List<Collider> collisionsList;
+    //создадим лист для хранения объектов-скриптов реализующие ICollisionsComponent 
+    [HideInInspector] public List<ICollisionsComponent> ComponentCollisions = new List<ICollisionsComponent>();
 
     private void Start()
     {
-        for (int i = 0; i < CollisionAction.Count; i++)
+        if (CollisionAction!=null)//проверим на null лист скриптов
         {
-            if (CollisionAction[i] is IActionCollision component)
+            for (int i = 0; i < CollisionAction.Count; i++)
             {
-                CollisionsActionComponent.Add(component);
-            }
-            else
-            {
-                Debug.Log("Нет компонентов с IActionCollision");
+                if (CollisionAction[i] is ICollisionsComponent component)//проверим на наличие ICollisionsComponent лист скриптов
+                {
+                    ComponentCollisions.Add(component);//добавим в лист ICollisionsComponent найденое
+                }
+                else
+                {
+                    Debug.Log("Нет компонентов с ICollisionsComponent");
+                }
             }
         }
+        
     }
-    public void Execute()
+
+    //реализуем ICollisionsComponent, лист получаем из CollisionSystem
+    public void Execute(List<Collider> colliders)
     {
-        if (CollisionsActionComponent!=null)
+        //проверим на null лист сICollisionsComponent
+        if (ComponentCollisions!=null)
         {
 
-            for (int i = 0; i < CollisionsActionComponent.Count; i++)
+            for (int i = 0; i < ComponentCollisions.Count; i++)
             {
-                CollisionsActionComponent[i].ListGameObjects = new List<GameObject>();
-
-                collisionsList.ForEach(coll=>
-                {
-                    CollisionsActionComponent[i].ListGameObjects.Add(coll.gameObject);
-                });
-
-                CollisionsActionComponent[i].Execute();
+                //вызовем метод во всех объектах из справочника и передадим лист с получеными коллайдерами
+                ComponentCollisions[i].Execute(colliders);
             }
         }
        
     }
+
+    //конвертируем в сущность текущий объект по типу коллайдера
     public void Convert(Entity entity, EntityManager entityManager, GameObjectConversionSystem conversionSystem)
     {
         float3 position = gameObject.transform.position;
         switch (Collider)
         {
             case SphereCollider sphere:
+                //получим параметры коллайдера данного объекта
                 sphere.ToWorldSpaceSphere(out float3 sphereCenter, out float sphereRadius);
+                //добавим в сущности коллайдер объекта (через структуру ColliderData)
                 entityManager.AddComponentData(entity, new ColliderData
                 {
                     TypeCollider = TypeCollider.Sphere,
@@ -63,7 +67,9 @@ public class CollisionsComponent : MonoBehaviour, IConvertGameObjectToEntity, IC
                 break;
 
             case CapsuleCollider capsule:
+                //получим параметры коллайдера данного объекта
                 capsule.ToWorldSpaceCapsule(out float3 capsuleStart, out float3 capsuleEnd, out float capsuleRadius);
+                //добавим в сущности коллайдер объекта (через структуру ColliderData)
                 entityManager.AddComponentData(entity, new ColliderData
                 {
                     TypeCollider = TypeCollider.Capsule,
@@ -75,7 +81,9 @@ public class CollisionsComponent : MonoBehaviour, IConvertGameObjectToEntity, IC
                 break;
 
             case BoxCollider box:
+                //получим параметры коллайдера данного объекта
                 box.ToWorldSpaceBox(out float3 boxCenter, out float3 boxHalfExtents, out quaternion boxOrientation);
+                //добавим в сущности коллайдер объекта (через структуру ColliderData)
                 entityManager.AddComponentData(entity, new ColliderData
                 {
                     TypeCollider = TypeCollider.Box,
@@ -89,7 +97,7 @@ public class CollisionsComponent : MonoBehaviour, IConvertGameObjectToEntity, IC
             default:
                 break;
         }
-
+        //отключим коллайдер(аналог режима тригера)
         Collider.enabled = false;
     }
 

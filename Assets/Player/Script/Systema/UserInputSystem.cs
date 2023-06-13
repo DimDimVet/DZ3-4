@@ -6,10 +6,9 @@ using Unity.Mathematics;
 
 public class UserInputSystem : ComponentSystem
 {
+    //создадим переменую результата запроса сущностей
     private EntityQuery inputQuery;
-    //private InputAction inputAction;
-    //private InputAction shootAction;
-    //private InputAction pullAction;
+    //создадим переменую MapCurrent(new input)
     private MapCurrent inputAction;
 
     private float2 moveInput;
@@ -18,13 +17,15 @@ public class UserInputSystem : ComponentSystem
 
     protected override void OnCreate()
     {
+        //получим результат запроса сущностей имеющие структуру InputData
         inputQuery = GetEntityQuery(ComponentType.ReadOnly<InputData>());
     }
 
     protected override void OnStartRunning()
     {
-        inputAction = new MapCurrent();
+        inputAction = new MapCurrent();//инициализируем карту input
 
+        //подпишем на event события нажатий и значения присвоим локальным переменым
         inputAction.UIMap.WASD.performed += context => { moveInput = context.ReadValue<Vector2>(); };
         inputAction.UIMap.WASD.started += context => { moveInput = context.ReadValue<Vector2>(); };
         inputAction.UIMap.WASD.canceled += context => { moveInput = context.ReadValue<Vector2>(); };
@@ -40,45 +41,19 @@ public class UserInputSystem : ComponentSystem
         inputAction.Map.Pull.performed += context => { pullInput = context.ReadValue<float>(); };
         inputAction.Map.Pull.started += context => { pullInput = context.ReadValue<float>(); };
         inputAction.Map.Pull.canceled += context => { pullInput = context.ReadValue<float>(); };
-
+        //запустим 
         inputAction.Enable();
-        //inputAction = new InputAction(name: "move", binding: "<Gamepad>/rightStick");
 
-        //inputAction.AddCompositeBinding("Dpad")
-        //    .With(name: "Up", binding: "<Keyboard>/w")
-        //    .With(name: "Down", binding: "<Keyboard>/s")
-        //    .With(name: "Left", binding: "<Keyboard>/a")
-        //    .With(name: "Right", binding: "<Keyboard>/d");
-
-        //inputAction.performed += context => { moveInput = context.ReadValue<Vector2>(); };
-        //inputAction.started += context => { moveInput = context.ReadValue<Vector2>(); };
-        //inputAction.canceled += context => { moveInput = context.ReadValue<Vector2>(); };
-        //inputAction.Enable();
-        ////
-        //shootAction = new InputAction(name: "shoot", binding: "<Keyboard>/Space");
-
-        //shootAction.Map.Shoot.performed += context => { shootInput = context.ReadValue<float>(); };
-        //shootAction.Map.Shoot.started += context => { shootInput = context.ReadValue<float>(); };
-        //shootAction.Map.Shoot.canceled += context => { shootInput = context.ReadValue<float>(); };
-        //shootAction.Enable();
-        ////
-        //pullAction = new InputAction(name: "pull", binding: "<Keyboard>/Tab");
-
-        //pullAction.performed += context => { pullInput = context.ReadValue<float>(); };
-        //pullAction.started += context => { pullInput = context.ReadValue<float>(); };
-        //pullAction.canceled += context => { pullInput = context.ReadValue<float>(); };
-        //pullAction.Enable();
     }
 
     protected override void OnStopRunning()
     {
         inputAction.Disable();
-        //shootAction.Disable();
-        //pullAction.Disable();
     }
 
     protected override void OnUpdate()
     {
+        //при каждом кадре отслеживать значение из локальных переменых и присваивать в структуру InputData
         Entities.With(inputQuery).ForEach
             (
             (Entity entity, ref InputData inputData) =>

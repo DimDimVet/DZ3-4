@@ -1,19 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using Unity.Entities;
 using Unity.Mathematics;
 
 public class UserAnimSystem : ComponentSystem
 {
-    private EntityQuery animQuery;
+    private EntityQuery animQuery;//создадим переменую результата запроса сущностей
     protected override void OnCreate()
     {
+        //получим результат запроса всех сущностей имеющие InputData и UserInputDataComponent
         animQuery = GetEntityQuery(ComponentType.ReadOnly<InputData>(),
                                    ComponentType.ReadOnly<UserInputDataComponent>());
     }
     protected override void OnUpdate()
     {
+        //при каждом кадре ищем в сущностях изменеия структуры InputData
         Entities.With(animQuery).ForEach
             (
             (Entity entity, UserInputDataComponent userInput, ref InputData inputData) =>
@@ -21,6 +20,7 @@ public class UserAnimSystem : ComponentSystem
                 if (userInput.CurrentAnim != null && userInput.CurrentAnim is IAnimComponent ability)
                 {
                     //pull
+                    //реакция на изменеия, запустим анимацию 
                     bool isPull;
                     if (inputData.Pull > 0f)
                     {
@@ -33,6 +33,7 @@ public class UserAnimSystem : ComponentSystem
                     ability.GetPull(isPull);
 
                     //move
+                    //реакция на изменеия, запустим анимацию
                     float2 move; 
                     if (inputData.Move.x != 0f | inputData.Move.y != 0f)
                     {
