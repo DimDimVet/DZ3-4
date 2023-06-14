@@ -2,51 +2,45 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BullComponent : MonoBehaviour
+public class BullComponent : MonoBehaviour/*, ICollisionsComponent*/
 {
-    [SerializeField] private Rigidbody bullet;
-    [SerializeField] private float bulletSpeed;
-    [SerializeField] private Transform outBullet;
-    //private GameObject currentBullet;
-    private Rigidbody currentBulletVelocity;
-    public float ShootDelay;
-    private float shootTime = float.MinValue;
-    //public int Speed;
-    //[SerializeField]private GameObject lastPosGO;
-    //private Vector3 lastPos;
-    // Start is called before the first frame update
-    void Start()
-    {
-        //currentBulletVelocity = bullet.GetComponent<Rigidbody>();
-        //lastPos = lastPosGO.transform.position;
-    }
+    public int Speed;
+    public Collider CollaiderBullet;
+    public GameObject decalGO;
 
-    // Update is called once per frame
-    void Update()
+    private Vector3 startPos;
+    private GameObject decal;
+    private bool isShoot = true;
+    private void Start()
     {
-        if (Time.time < shootTime + ShootDelay)
+        startPos = transform.position;
+    }
+    public void Execute(List<Collider> colliders)
+    {
+        //isShoot = true;
+    }
+    private void Update()
+    {
+
+        transform.Translate(Vector3.forward * Speed * Time.deltaTime);
+        RaycastHit hit;
+        if (Physics.Linecast(startPos, transform.position, out hit))
         {
-            return;
+            CollaiderBullet.enabled = false;
+            decal = Instantiate(decalGO);
+            decal.transform.position = hit.point + hit.normal * 0.001f;
+            decal.transform.rotation = Quaternion.LookRotation(-hit.normal);
+            Destroy(decal, 1);
+
+            Destroy(gameObject);
         }
         else
         {
-            shootTime = Time.time;
+            Destroy(gameObject,5);
         }
-        currentBulletVelocity = Instantiate(bullet, outBullet.position, outBullet.rotation);
-        currentBulletVelocity.AddForce(outBullet.up* bulletSpeed);
-        //currentBullet = Instantiate(bullet,outBullet.transform.position,Quaternion.identity);
-        //currentBulletVelocity.velocity = new Vector3(bulletSpeed*-1, 0,currentBulletVelocity.velocity.z);
+        startPos = transform.position;
+        //isShoot = false;
 
-        //transform.Translate(Vector3.forward * Speed * Time.deltaTime);
 
-        //RaycastHit hit;
-
-        //Debug.DrawLine(lastPos,transform.position);
-        //if (Physics.Linecast(lastPos, transform.position, out hit))
-        //{
-        //    print(hit.transform.name);
-        //    Destroy(gameObject);
-        //}
-        //lastPos = transform.position;
     }
 }

@@ -5,20 +5,19 @@ using UnityEngine;
 public class ShootComponent : MonoBehaviour, IShootComponent
 {
 
-    [SerializeField] private Rigidbody bullet;
+    [SerializeField] private GameObject bullet;
     [SerializeField] private float bulletSpeed;
     [SerializeField] private Transform outBullet;
-    //private GameObject currentBullet;
-    private Rigidbody currentBulletVelocity;
-
-    //public GameObject Bullet;
+    //private Rigidbody currentBulletVelocity;
+    //private GameObject bulletGO;
     public float ShootDelay;
     private float shootTime = float.MinValue;
-    //
-    [SerializeField] private ParticleSystem gunParticle;//система частиц
-    [SerializeField] private ParticleSystem gunExitParticle;//система частиц
+    //private void Start()
+    //{
+    //    bulletGO = GetComponent<GameObject>();
+    //}
 
-    void IShootComponent.Shoot()
+    public void Shoot()
     {
         if (Time.time < shootTime + ShootDelay)
         {
@@ -29,22 +28,8 @@ public class ShootComponent : MonoBehaviour, IShootComponent
             shootTime = Time.time;
         }
 
-        if (gunParticle != null & gunExitParticle != null)
-        {
+        Instantiate(bullet, outBullet.position, outBullet.rotation);
+       // currentBulletVelocity.AddForce(outBullet.up * bulletSpeed, ForceMode.Force);
 
-            currentBulletVelocity = Instantiate(bullet, outBullet.position, outBullet.rotation);
-            currentBulletVelocity.AddForce(outBullet.up * bulletSpeed,ForceMode.Force);
-            //
-
-
-            gunParticle.Play();//при нажатии вызываем включение системы частиц
-            gunExitParticle.Play();
-        }
-        else
-        {
-            Debug.Log($"{gunParticle} и {gunExitParticle} не работает");
-        }
     }
-
-
 }
