@@ -8,14 +8,17 @@ public class ShootComponent : MonoBehaviour, IShootComponent
     [SerializeField] private GameObject bullet;
     [SerializeField] private float bulletSpeed;
     [SerializeField] private Transform outBullet;
-    //private Rigidbody currentBulletVelocity;
-    //private GameObject bulletGO;
+    public bool IsModeBull = false;
+    //соберем в лист стороние скрипты
+    public List<MonoBehaviour> CollisionAction = new List<MonoBehaviour>();
+
     public float ShootDelay;
     private float shootTime = float.MinValue;
-    //private void Start()
-    //{
-    //    bulletGO = GetComponent<GameObject>();
-    //}
+    private BullComponent scrBullet;
+    private void Start()
+    {
+        scrBullet = bullet.GetComponent<BullComponent>();
+    }
 
     public void Shoot()
     {
@@ -29,6 +32,15 @@ public class ShootComponent : MonoBehaviour, IShootComponent
         }
 
         Instantiate(bullet, outBullet.position, outBullet.rotation);
+        if (IsModeBull)
+        {
+            scrBullet.IsMode=true;
+        }
+        else
+        {
+            scrBullet.IsMode = false;
+        }
+        
        // currentBulletVelocity.AddForce(outBullet.up * bulletSpeed, ForceMode.Force);
 
     }
